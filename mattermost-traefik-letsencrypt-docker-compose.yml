@@ -1,0 +1,261 @@
+# Mattermost with Let's Encrypt Using Docker Compose
+
+# The complete installation guide is available on my https://www.heyvaldemar.com/install-mattermost-using-docker-compose/
+
+# Change variables in the `.env` to meet your requirements.
+# Note that the `.env` file should be in the same directory as `mattermost-traefik-letsencrypt-docker-compose.yml`.
+
+# Create networks for your services before deploying the configuration using the commands:
+# `docker network create traefik-network`
+# `docker network create mattermost-network`
+
+# Deploy Mattermost using Docker Compose:
+# `docker compose -f mattermost-traefik-letsencrypt-docker-compose.yml -p mattermost up -d`
+
+# Data Retention
+# Use the script if you wish to set a data retention policy
+# https://github.com/heyValdemar/mattermost-data-retention-docker-compose
+
+# Backups
+# The `backups` container in the configuration is responsible for the following:
+# 1. **Database Backup**: Creates compressed backups of the PostgreSQL database using pg_dump.
+# Customizable backup path, filename pattern, and schedule through variables like `POSTGRES_BACKUPS_PATH`, `POSTGRES_BACKUP_NAME`, and `BACKUP_INTERVAL`.
+# 2. **Application Data Backup**: Compresses and stores backups of the application data on the same schedule. Controlled via variables such as `DATA_BACKUPS_PATH`, `DATA_BACKUP_NAME`, and `BACKUP_INTERVAL`.
+# 3. **Backup Pruning**: Periodically removes backups exceeding a specified age to manage storage.
+# Customizable pruning schedule and age threshold with `POSTGRES_BACKUP_PRUNE_DAYS` and `DATA_BACKUP_PRUNE_DAYS`.
+# By utilizing this container, consistent and automated backups of the essential components of your instance are ensured.
+# Moreover, efficient management of backup storage and tailored backup routines can be achieved through easy and flexible configuration using environment variables.
+
+# # mattermost-restore-database.sh Description
+# This script facilitates the restoration of a database backup.
+# 1. **Identify Containers**: It first identifies the service and backups containers by name, finding the appropriate container IDs.
+# 2. **List Backups**: Displays all available database backups located at the specified backup path.
+# 3. **Select Backup**: Prompts the user to copy and paste the desired backup name from the list to restore the database.
+# 4. **Stop Service**: Temporarily stops the service to ensure data consistency during restoration.
+# 5. **Restore Database**: Executes a sequence of commands to drop the current database, create a new one, and restore it from the selected compressed backup file.
+# 6. **Start Service**: Restarts the service after the restoration is completed.
+# To make the `mattermost-restore-database.shh` script executable, run the following command:
+# `chmod +x mattermost-restore-database.sh`
+# Usage of this script ensures a controlled and guided process to restore the database from an existing backup.
+
+# # mattermost-restore-application-data.sh Description
+# This script is designed to restore the application data.
+# 1. **Identify Containers**: Similarly to the database restore script, it identifies the service and backups containers by name.
+# 2. **List Application Data Backups**: Displays all available application data backups at the specified backup path.
+# 3. **Select Backup**: Asks the user to copy and paste the desired backup name for application data restoration.
+# 4. **Stop Service**: Stops the service to prevent any conflicts during the restore process.
+# 5. **Restore Application Data**: Removes the current application data and then extracts the selected backup to the appropriate application data path.
+# 6. **Start Service**: Restarts the service after the application data has been successfully restored.
+# To make the `mattermost-restore-application-data.sh` script executable, run the following command:
+# `chmod +x mattermost-restore-application-data.sh`
+# By utilizing this script, you can efficiently restore application data from an existing backup while ensuring proper coordination with the running service.
+
+# Author
+# I’m Vladimir Mikhalev, the Docker Captain, but my friends can call me Valdemar.
+# https://www.docker.com/captains/vladimir-mikhalev/
+
+# My website with detailed IT guides: https://www.heyvaldemar.com/
+# Follow me on YouTube: https://www.youtube.com/channel/UCf85kQ0u1sYTTTyKVpxrlyQ?sub_confirmation=1
+# Follow me on Twitter: https://twitter.com/heyValdemar
+# Follow me on Instagram: https://www.instagram.com/heyvaldemar/
+# Follow me on Threads: https://www.threads.net/@heyvaldemar
+# Follow me on Mastodon: https://hachyderm.io/@heyValdemar
+# Follow me on Bluesky: https://bsky.app/profile/heyvaldemar.bsky.social
+# Follow me on Facebook: https://www.facebook.com/heyValdemarFB/
+# Follow me on TikTok: https://www.tiktok.com/@heyvaldemar
+# Follow me on LinkedIn: https://www.linkedin.com/in/heyvaldemar/
+# Follow me on GitHub: https://github.com/heyvaldemar
+
+# Communication
+# Chat with IT pros on Discord: https://discord.gg/AJQGCCBcqf
+# Reach me at ask@sre.gg
+
+# Give Thanks
+# Support on GitHub: https://github.com/sponsors/heyValdemar
+# Support on Patreon: https://www.patreon.com/heyValdemar
+# Support on BuyMeaCoffee: https://www.buymeacoffee.com/heyValdemar
+# Support on Ko-fi: https://ko-fi.com/heyValdemar
+# Support on PayPal: https://www.paypal.com/paypalme/heyValdemarCOM
+
+networks:
+  mattermost-network:
+    external: true
+  traefik-network:
+    external: true
+
+volumes:
+  mattermost-data:
+  mattermost-config:
+  mattermost-logs:
+  mattermost-plugins:
+  mattermost-client-plugins:
+  mattermost-bleve-indexes:
+  mattermost-postgres:
+  mattermost-postgres-backup:
+  mattermost-data-backups:
+  mattermost-database-backups:
+  traefik-certificates:
+
+services:
+  postgres:
+    image: ${MATTERMOST_POSTGRES_IMAGE_TAG}
+    volumes:
+      - mattermost-postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${MATTERMOST_DB_NAME}
+      POSTGRES_USER: ${MATTERMOST_DB_USER}
+      POSTGRES_PASSWORD: ${MATTERMOST_DB_PASSWORD}
+    networks:
+      - mattermost-network
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "${MATTERMOST_DB_NAME}", "-U", "${MATTERMOST_DB_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+
+  mattermost:
+    image: ${MATTERMOST_IMAGE_TAG}
+    volumes:
+      - mattermost-data:${DATA_PATH}
+      - mattermost-config:/mattermost/config
+      - mattermost-logs:/mattermost/logs
+      - mattermost-plugins:/mattermost/plugins
+      - mattermost-client-plugins:/mattermost/client/plugins
+      - mattermost-bleve-indexes:/mattermost/bleve-indexes
+    environment:
+      TZ: ${MATTERMOST_TIMEZONE}
+      MM_SQLSETTINGS_DRIVERNAME: ${MATTERMOST_DB_TYPE}
+      MM_SQLSETTINGS_DATASOURCE: postgres://${MATTERMOST_DB_USER}:${MATTERMOST_DB_PASSWORD}@postgres:5432/${MATTERMOST_DB_NAME}?sslmode=disable&connect_timeout=10
+      MM_BLEVESETTINGS_INDEXDIR: /mattermost/bleve-indexes
+      DOMAIN: ${MATTERMOST_HOSTNAME}
+      MM_SERVICESETTINGS_SITEURL: ${MATTERMOST_URL}
+      MM_SERVICESETTINGS_FORWARD80TO443: 'false'
+      MATTERMOST_CONTAINER_READONLY: 'false'
+    networks:
+      - mattermost-network
+      - traefik-network
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 200
+    read_only: 'false'
+    tmpfs:
+      - /tmp
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8065/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mattermost.rule=Host(`${MATTERMOST_HOSTNAME}`)"
+      - "traefik.http.routers.mattermost.service=mattermost"
+      - "traefik.http.routers.mattermost.entrypoints=websecure"
+      - "traefik.http.services.mattermost.loadbalancer.server.port=8065"
+      - "traefik.http.routers.mattermost.tls=true"
+      - "traefik.http.routers.mattermost.tls.certresolver=letsencrypt"
+      - "traefik.http.services.mattermost.loadbalancer.passhostheader=true"
+      - "traefik.http.routers.mattermost.middlewares=compresstraefik"
+      - "traefik.udp.routers.mm-call-rtr.service=mm-call-svc"
+      - "traefik.udp.routers.mm-call-rtr.entrypoints=calls"
+      - "traefik.udp.services.mm-call-svc.loadBalancer.server.port=8443"
+      - "traefik.http.middlewares.compresstraefik.compress=true"
+      - "traefik.docker.network=traefik-network"
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      traefik:
+        condition: service_healthy
+
+  traefik:
+    image: ${TRAEFIK_IMAGE_TAG}
+    command:
+      - "--log.level=${TRAEFIK_LOG_LEVEL}"
+      - "--accesslog=true"
+      - "--api.dashboard=true"
+      - "--api.insecure=true"
+      - "--ping=true"
+      - "--ping.entrypoint=ping"
+      - "--entryPoints.ping.address=:8082"
+      - "--entryPoints.web.address=:80"
+      - "--entryPoints.websecure.address=:443"
+      - "--entryPoints.calls.address=:8443/udp"
+      - "--providers.docker=true"
+      - "--providers.docker.endpoint=unix:///var/run/docker.sock"
+      - "--providers.docker.exposedByDefault=false"
+      - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.email=${TRAEFIK_ACME_EMAIL}"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/etc/traefik/acme/acme.json"
+      - "--metrics.prometheus=true"
+      - "--metrics.prometheus.buckets=0.1,0.3,1.2,5.0"
+      - "--global.checkNewVersion=true"
+      - "--global.sendAnonymousUsage=false"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - traefik-certificates:/etc/traefik/acme
+    networks:
+      - traefik-network
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8443:8443" 
+    healthcheck:
+      test: ["CMD", "wget", "http://localhost:8082/ping","--spider"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`${TRAEFIK_HOSTNAME}`)"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
+      - "traefik.http.services.dashboard.loadbalancer.server.port=8080"
+      - "traefik.http.routers.dashboard.tls=true"
+      - "traefik.http.routers.dashboard.tls.certresolver=letsencrypt"
+      - "traefik.http.services.dashboard.loadbalancer.passhostheader=true"
+      - "traefik.http.routers.dashboard.middlewares=authtraefik"
+      - "traefik.http.middlewares.authtraefik.basicauth.users=${TRAEFIK_BASIC_AUTH}"
+      - "traefik.http.routers.http-catchall.rule=HostRegexp(`{host:.+}`)"
+      - "traefik.http.routers.http-catchall.entrypoints=web"
+      - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+    restart: unless-stopped
+
+  backups:
+    image: ${MATTERMOST_POSTGRES_IMAGE_TAG}
+    command: >-
+      sh -c 'sleep $BACKUP_INIT_SLEEP &&
+      while true; do
+        pg_dump -h postgres -p 5432 -d $MATTERMOST_DB_NAME -U $MATTERMOST_DB_USER | gzip > $POSTGRES_BACKUPS_PATH/$POSTGRES_BACKUP_NAME-$(date "+%Y-%m-%d_%H-%M").gz &&
+        tar -zcpf $DATA_BACKUPS_PATH/$DATA_BACKUP_NAME-$(date "+%Y-%m-%d_%H-%M").tar.gz $DATA_PATH &&
+        find $POSTGRES_BACKUPS_PATH -type f -mtime +$POSTGRES_BACKUP_PRUNE_DAYS | xargs rm -f &&
+        find $DATA_BACKUPS_PATH -type f -mtime +$DATA_BACKUP_PRUNE_DAYS | xargs rm -f;
+        sleep $BACKUP_INTERVAL; done'
+    volumes:
+      - mattermost-postgres-backup:/var/lib/postgresql/data
+      - mattermost-data:${DATA_PATH}
+      - mattermost-data-backups:${DATA_BACKUPS_PATH}
+      - mattermost-database-backups:${POSTGRES_BACKUPS_PATH}
+    environment:
+      MATTERMOST_DB_NAME: ${MATTERMOST_DB_NAME}
+      MATTERMOST_DB_USER: ${MATTERMOST_DB_USER}
+      PGPASSWORD: ${MATTERMOST_DB_PASSWORD}
+      BACKUP_INIT_SLEEP: ${BACKUP_INIT_SLEEP}
+      BACKUP_INTERVAL: ${BACKUP_INTERVAL}
+      POSTGRES_BACKUP_PRUNE_DAYS: ${POSTGRES_BACKUP_PRUNE_DAYS}
+      DATA_BACKUP_PRUNE_DAYS: ${DATA_BACKUP_PRUNE_DAYS}
+      POSTGRES_BACKUPS_PATH: ${POSTGRES_BACKUPS_PATH}
+      DATA_BACKUPS_PATH: ${DATA_BACKUPS_PATH}
+      DATA_PATH: ${DATA_PATH}
+      POSTGRES_BACKUP_NAME: ${POSTGRES_BACKUP_NAME}
+      DATA_BACKUP_NAME: ${DATA_BACKUP_NAME}
+    networks:
+      - mattermost-network
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
