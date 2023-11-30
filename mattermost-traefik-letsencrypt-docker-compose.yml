@@ -157,10 +157,10 @@ services:
       - "traefik.http.routers.mattermost.tls=true"
       - "traefik.http.routers.mattermost.tls.certresolver=letsencrypt"
       - "traefik.http.services.mattermost.loadbalancer.passhostheader=true"
-      - "traefik.http.routers.mattermost.middlewares=compresstraefik"
       - "traefik.udp.routers.mm-call-rtr.service=mm-call-svc"
       - "traefik.udp.routers.mm-call-rtr.entrypoints=calls"
       - "traefik.udp.services.mm-call-svc.loadBalancer.server.port=8443"
+      - "traefik.http.routers.mattermost.middlewares=compresstraefik"
       - "traefik.http.middlewares.compresstraefik.compress=true"
       - "traefik.docker.network=traefik-network"
     restart: unless-stopped
