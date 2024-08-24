@@ -201,7 +201,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "8443:8443" 
+      - "8443:8443/udp" 
     healthcheck:
       test: ["CMD", "wget", "http://localhost:8082/ping","--spider"]
       interval: 10s
