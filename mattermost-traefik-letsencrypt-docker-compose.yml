@@ -40,10 +40,10 @@ services:
     image: ${MATTERMOST_IMAGE_TAG}
     volumes:
       - mattermost-data:${DATA_PATH}
-      - mattermost-config:/mattermost/config
+      - ./config/config.json:/mattermost/config/config.json
       - mattermost-logs:/mattermost/logs
-      - mattermost-plugins:/mattermost/plugins
-      - mattermost-client-plugins:/mattermost/client/plugins
+      - ./plugins:/mattermost/plugins
+      - ./client-plugins:/mattermost/client/plugins
       - mattermost-bleve-indexes:/mattermost/bleve-indexes
     environment:
       TZ: ${MATTERMOST_TIMEZONE}
