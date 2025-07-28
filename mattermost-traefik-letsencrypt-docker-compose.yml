@@ -63,12 +63,6 @@ services:
     read_only: 'false'
     tmpfs:
       - /tmp
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8065/"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 90s
     labels:
       # Enable Traefik for this container
       - "traefik.enable=true"
