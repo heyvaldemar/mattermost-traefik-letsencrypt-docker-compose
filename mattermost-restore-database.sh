@@ -16,7 +16,6 @@ MATTERMOST_CONTAINER=$(docker ps -aqf "name=mattermost-mattermost")
 MATTERMOST_BACKUPS_CONTAINER=$(docker ps -aqf "name=mattermost-backups")
 MATTERMOST_DB_NAME="mattermostdb"
 MATTERMOST_DB_USER="mattermostdbuser"
-POSTGRES_PASSWORD=$(docker exec $MATTERMOST_BACKUPS_CONTAINER printenv PGPASSWORD)
 BACKUP_PATH="/srv/mattermost-postgres/backups/"
 
 echo "--> All available database backups:"
@@ -30,7 +29,7 @@ echo "--> Copy and paste the backup name from the list above to restore database
 --> Example: mattermost-postgres-backup-YYYY-MM-DD_hh-mm.gz"
 echo -n "--> "
 
-read SELECTED_DATABASE_BACKUP
+read -r SELECTED_DATABASE_BACKUP
 
 echo "--> $SELECTED_DATABASE_BACKUP was selected"
 
