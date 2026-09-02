@@ -32,6 +32,16 @@ volumes:
 services:
   postgres:
     image: *postgres-image
+    # Resource limits as .env-overridable defaults (e.g. MATTERMOST_POSTGRES_MEMORY_LIMIT=2g);
+    # the override survives every git pull.
+    deploy:
+      resources:
+        limits:
+          memory: ${MATTERMOST_POSTGRES_MEMORY_LIMIT:-1g}
+          cpus: "${MATTERMOST_POSTGRES_CPU_LIMIT:-1.0}"
+        reservations:
+          memory: ${MATTERMOST_POSTGRES_MEMORY_RESERVATION:-128m}
+          cpus: "${MATTERMOST_POSTGRES_CPU_RESERVATION:-0.25}"
     volumes:
       - mattermost-postgres:/var/lib/postgresql/data
     environment:
@@ -50,6 +60,16 @@ services:
 
   mattermost:
     image: *mattermost-image
+    # Resource limits as .env-overridable defaults (e.g. MATTERMOST_MEMORY_LIMIT=2g);
+    # the override survives every git pull.
+    deploy:
+      resources:
+        limits:
+          memory: ${MATTERMOST_MEMORY_LIMIT:-1g}
+          cpus: "${MATTERMOST_CPU_LIMIT:-1.0}"
+        reservations:
+          memory: ${MATTERMOST_MEMORY_RESERVATION:-128m}
+          cpus: "${MATTERMOST_CPU_RESERVATION:-0.25}"
     volumes:
       - mattermost-data:${DATA_PATH:-/mattermost/data}
       - mattermost-config:/mattermost/config
@@ -113,6 +133,16 @@ services:
 
   traefik:
     image: *traefik-image
+    # Resource limits as .env-overridable defaults (e.g. TRAEFIK_MEMORY_LIMIT=2g);
+    # the override survives every git pull.
+    deploy:
+      resources:
+        limits:
+          memory: ${TRAEFIK_MEMORY_LIMIT:-256m}
+          cpus: "${TRAEFIK_CPU_LIMIT:-0.5}"
+        reservations:
+          memory: ${TRAEFIK_MEMORY_RESERVATION:-64m}
+          cpus: "${TRAEFIK_CPU_RESERVATION:-0.1}"
     command:
       # Set the log level (DEBUG, INFO, WARN, ERROR)
       - "--log.level=${TRAEFIK_LOG_LEVEL:-WARN}"
@@ -188,6 +218,16 @@ services:
 
   backups:
     image: *postgres-image
+    # Resource limits as .env-overridable defaults (e.g. MATTERMOST_BACKUPS_MEMORY_LIMIT=2g);
+    # the override survives every git pull.
+    deploy:
+      resources:
+        limits:
+          memory: ${MATTERMOST_BACKUPS_MEMORY_LIMIT:-256m}
+          cpus: "${MATTERMOST_BACKUPS_CPU_LIMIT:-0.5}"
+        reservations:
+          memory: ${MATTERMOST_BACKUPS_MEMORY_RESERVATION:-32m}
+          cpus: "${MATTERMOST_BACKUPS_CPU_RESERVATION:-0.1}"
     command: >-
       bash -c 'set -o pipefail;
       sleep "$$BACKUP_INIT_SLEEP";
