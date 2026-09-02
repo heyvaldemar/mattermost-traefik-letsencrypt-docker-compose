@@ -131,6 +131,8 @@ The weekly `check-pin-freshness` CI job re-resolves each pinned tag against its 
 
 The `backups` container performs a dump → archive → prune → sleep loop: `pg_dump | gzip` of the database, `tar.gz` of the uploads directory, pruning by retention windows, then sleeping `BACKUP_INTERVAL` (default 24h).
 
+Each cycle logs `Database backup OK: <file> (<bytes> bytes)` or `Database backup FAILED` (the same for the data archive where there is one). A failed dump is kept as `<file>.failed` for diagnosis and never overwrites a good backup — grep the log for `FAILED` from your monitoring.
+
 **Verify backups are running:**
 
 ```bash
