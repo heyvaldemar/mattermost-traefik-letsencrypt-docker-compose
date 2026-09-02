@@ -67,6 +67,7 @@ services:
         limits:
           memory: ${MATTERMOST_MEMORY_LIMIT:-1g}
           cpus: "${MATTERMOST_CPU_LIMIT:-1.0}"
+          pids: 200
         reservations:
           memory: ${MATTERMOST_MEMORY_RESERVATION:-128m}
           cpus: "${MATTERMOST_CPU_RESERVATION:-0.25}"
@@ -91,7 +92,6 @@ services:
       - traefik-network
     security_opt:
       - no-new-privileges:true
-    pids_limit: 200
     read_only: 'false'
     tmpfs:
       - /tmp
