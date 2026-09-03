@@ -16,7 +16,7 @@
 - [Security Notes](#security-notes)
 - [About the maintainer](#about-the-maintainer)
 
-This repository deploys **Mattermost Team Edition** behind **Traefik** with automatic **Let's Encrypt TLS**, backed by **PostgreSQL**, with scheduled **backups** (database + file uploads) and companion **restore scripts**. One `docker compose up` away from self-hosted team chat at `https://your-domain`.
+This repository deploys Mattermost Team Edition behind Traefik with automatic Let's Encrypt TLS, backed by PostgreSQL, with scheduled backups (database + file uploads) and companion restore scripts. One `docker compose up` away from self-hosted team chat at `https://your-domain`.
 
 📙 Full narrative installation guide on the blog: [heyvaldemar.com/install-mattermost-using-docker-compose/](https://www.heyvaldemar.com/install-mattermost-using-docker-compose/).
 
@@ -108,7 +108,7 @@ docker compose -f mattermost-traefik-letsencrypt-docker-compose.yml -p mattermos
 
 ## Supply chain trust
 
-This repository is a **deployment template**, not a custom Docker image. It orchestrates three upstream images:
+This repository is a deployment template, not a custom Docker image. It orchestrates three upstream images:
 
 - [`traefik`](https://hub.docker.com/_/traefik): reverse proxy, Docker Hub official image
 - [`mattermost/mattermost-team-edition`](https://hub.docker.com/r/mattermost/mattermost-team-edition): Mattermost upstream
@@ -173,7 +173,7 @@ chmod +x tests/e2e-backup-restore.sh
 
 It stops the database container briefly to prove failure detection. Run it on a staging copy, not on production.
 
-## Security Notes
+## Security notes
 
 - Credentials are read from `.env` at deploy time; `.env` is gitignored and compose fails fast on missing required variables.
 - **Pre-rotation advisory.** Releases before v1.0.0 (2026-08-31) shipped a tracked `.env` with a generated-looking database password. Rotate `MATTERMOST_DB_PASSWORD` if your deployment reused it.
