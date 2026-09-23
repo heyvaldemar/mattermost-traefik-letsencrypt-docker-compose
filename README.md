@@ -146,7 +146,7 @@ Each cycle logs `Database backup OK: <file> (<bytes> bytes)` or `Database backup
 docker compose -p mattermost logs backups | tail -5
 ```
 
-**Restore** with the interactive scripts (`chmod +x *.sh` once): `./mattermost-restore-database.sh`, then `./mattermost-restore-application-data.sh`.
+**Restore** with the interactive scripts (`chmod +x *.sh` once): `./mattermost-restore-database.sh`, then `./mattermost-restore-application-data.sh`. Each lists the backups and asks, or takes a file name as its argument; both read every path and credential from the running backups container, and CI runs both on every push.
 
 ## Resource limits
 
