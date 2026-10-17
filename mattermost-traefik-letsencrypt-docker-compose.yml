@@ -8,7 +8,7 @@
 x-images:
   traefik: &traefik-image ${TRAEFIK_IMAGE_TAG:-traefik:${TRAEFIK_IMAGE_VERSION:-3.7@sha256:0f6150202bc1fed72a7bd2107460eaa510e5b8a905f3fdb5b84f2c8619c33368}}
   postgres: &postgres-image ${MATTERMOST_POSTGRES_IMAGE_TAG:-postgres:${MATTERMOST_POSTGRES_IMAGE_VERSION:-16@sha256:ca0bd484cb98bf4b24eb1010e73fb3fcbd6714d240fbc1a10eea5b7dbecb641d}}
-  mattermost: &mattermost-image ${MATTERMOST_IMAGE_TAG:-mattermost/mattermost-team-edition:${MATTERMOST_IMAGE_VERSION:-11.11.1@sha256:6ad5912b45875ef2fafc41886b5a70a3ec1b6c17ec706e0492566e8a2fd8aa85}}
+  mattermost: &mattermost-image ${MATTERMOST_IMAGE_TAG:-mattermost/mattermost-team-edition:${MATTERMOST_IMAGE_VERSION:-12.0.0@sha256:c213d4eb01c2973a3814f57dab4e0629287b92896cb2f98d27134aa62ee5c3cc}}
 
 networks:
   mattermost-network:
