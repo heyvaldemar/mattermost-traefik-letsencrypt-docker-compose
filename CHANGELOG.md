@@ -7,9 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+_(no unreleased changes yet)_
+
+## [1.10.0] - 2026-10-18
+
 ### Changed
 
 - **`mattermost/mattermost-team-edition:11.11.1` moved to `mattermost/mattermost-team-edition:12.0.0`.** The freshness check reported the lag; the deploy job booted the stack on the new image before this landed.
+
+### Upgrading
+
+Mattermost 12 is a major release. What it asks of a deployment like this one, from [its changelog](https://docs.mattermost.com/product-overview/mattermost-v12-changelog.html):
+
+- **PostgreSQL 15 or newer.** This stack runs `postgres:16`, so nothing to do.
+- **A migration takes a brief `ACCESS EXCLUSIVE` lock** while it raises the maximum message length, and the post full-text index is rebuilt afterwards; search runs without it until then. On a large instance, upgrade in a quiet hour.
+- **Web plugins not rebuilt for v12 (React 19) may not activate.** Update community plugins first.
+- **Removed settings are ignored** if left in `config.json`; `ExperimentalEnableHardenedMode` is now `EnableHardenedMode`.
+
+Before it landed, the deploy job booted the stack on 12.0.0, and the clean-machine drill restored 1.9.5's backups onto it and read its marker row back.
 
 ## [1.9.5] - 2026-10-16
 
@@ -293,7 +308,8 @@ v1.2.0.
 
 - Shellcheck findings in both restore scripts.
 
-[Unreleased]: https://github.com/heyvaldemar/mattermost-traefik-letsencrypt-docker-compose/compare/v1.9.5...HEAD
+[Unreleased]: https://github.com/heyvaldemar/mattermost-traefik-letsencrypt-docker-compose/compare/v1.10.0...HEAD
+[1.10.0]: https://github.com/heyvaldemar/mattermost-traefik-letsencrypt-docker-compose/compare/v1.9.5...v1.10.0
 [1.9.5]: https://github.com/heyvaldemar/mattermost-traefik-letsencrypt-docker-compose/compare/v1.9.4...v1.9.5
 [1.9.4]: https://github.com/heyvaldemar/mattermost-traefik-letsencrypt-docker-compose/compare/v1.9.3...v1.9.4
 [1.9.3]: https://github.com/heyvaldemar/mattermost-traefik-letsencrypt-docker-compose/compare/v1.9.2...v1.9.3
