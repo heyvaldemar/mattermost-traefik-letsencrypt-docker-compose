@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-_(no unreleased changes yet)_
+### Changed
+
+- **`mattermost/mattermost-team-edition:12.0.0` moved to `mattermost/mattermost-team-edition:12.0.1`.** The freshness check reported the lag; the deploy job booted the stack on the new image before this landed.
+
+### Security
+
+- **`traefik:3.7` was rebuilt upstream**; the pin moved from `sha256:22a759fb803a…` to `sha256:c8a121e4bb13…`. Same version, same tag, a rebuilt base image — the usual shape of a security fix in a base layer.
 
 ## [1.10.2] - 2026-10-22
 
