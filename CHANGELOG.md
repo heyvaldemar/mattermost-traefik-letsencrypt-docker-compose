@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+_(no unreleased changes yet)_
+
+## [1.10.6] - 2026-10-31
+
 ### Security
 
 - **`traefik:3.7` was rebuilt upstream**; the pin moved from `sha256:1336e85aaed2…` to `sha256:e9338a01a433…`. Same version, same tag, a rebuilt base image — the usual shape of a security fix in a base layer.
@@ -346,7 +350,8 @@ v1.2.0.
 
 - Shellcheck findings in both restore scripts.
 
-[Unreleased]: https://github.com/heyvaldemar/mattermost-traefik-letsencrypt-docker-compose/compare/v1.10.5...HEAD
+[Unreleased]: https://github.com/heyvaldemar/mattermost-traefik-letsencrypt-docker-compose/compare/v1.10.6...HEAD
+[1.10.6]: https://github.com/heyvaldemar/mattermost-traefik-letsencrypt-docker-compose/compare/v1.10.5...v1.10.6
 [1.10.5]: https://github.com/heyvaldemar/mattermost-traefik-letsencrypt-docker-compose/compare/v1.10.4...v1.10.5
 [1.10.4]: https://github.com/heyvaldemar/mattermost-traefik-letsencrypt-docker-compose/compare/v1.10.3...v1.10.4
 [1.10.3]: https://github.com/heyvaldemar/mattermost-traefik-letsencrypt-docker-compose/compare/v1.10.2...v1.10.3
