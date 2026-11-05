@@ -7,8 +7,8 @@
 # the pins from these lines — this block is the single source of truth.
 x-images:
   traefik: &traefik-image ${TRAEFIK_IMAGE_TAG:-traefik:${TRAEFIK_IMAGE_VERSION:-3.7@sha256:68ae5fe5b64ca166704b746a9e8afcd385e36b3f569a5691401bf652d57b3748}}
-  postgres: &postgres-image ${MATTERMOST_POSTGRES_IMAGE_TAG:-postgres:${MATTERMOST_POSTGRES_IMAGE_VERSION:-16@sha256:5db6dac2ef5dcff512f4f00a009c3c332b9f2f28f24277175bf3e4a3d02ef83a}}
-  mattermost: &mattermost-image ${MATTERMOST_IMAGE_TAG:-mattermost/mattermost-team-edition:${MATTERMOST_IMAGE_VERSION:-12.0.1@sha256:8ca1050cb8a2ec1ec0be5aff90ee40aa03e134f48443f7526b7b2b18872cf31b}}
+  postgres: &postgres-image ${MATTERMOST_POSTGRES_IMAGE_TAG:-postgres:${MATTERMOST_POSTGRES_IMAGE_VERSION:-16@sha256:933463a6c8eba2b9f5cd414138738cd8d5519cd2c471214c222652f547a66a32}}
+  mattermost: &mattermost-image ${MATTERMOST_IMAGE_TAG:-mattermost/mattermost-team-edition:${MATTERMOST_IMAGE_VERSION:-12.0.2@sha256:0e435f3397390c36797d0c09b6fcfd73841ebf89bb292d6c6e109082a21ad7b6}}
 
 networks:
   mattermost-network:
