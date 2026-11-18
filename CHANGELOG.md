@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+_(no unreleased changes yet)_
+
+## [1.10.16] - 2026-11-18
+
 ### Changed
 
 - **`mattermost/mattermost-team-edition:12.0.2` moved to `mattermost/mattermost-team-edition:12.1.0`.** The freshness check reported the lag; the deploy job booted the stack on the new image before this landed.
@@ -414,7 +418,8 @@ v1.2.0.
 
 - Shellcheck findings in both restore scripts.
 
-[Unreleased]: https://github.com/heyvaldemar/mattermost-traefik-letsencrypt-docker-compose/compare/v1.10.15...HEAD
+[Unreleased]: https://github.com/heyvaldemar/mattermost-traefik-letsencrypt-docker-compose/compare/v1.10.16...HEAD
+[1.10.16]: https://github.com/heyvaldemar/mattermost-traefik-letsencrypt-docker-compose/compare/v1.10.15...v1.10.16
 [1.10.15]: https://github.com/heyvaldemar/mattermost-traefik-letsencrypt-docker-compose/compare/v1.10.14...v1.10.15
 [1.10.14]: https://github.com/heyvaldemar/mattermost-traefik-letsencrypt-docker-compose/compare/v1.10.13...v1.10.14
 [1.10.13]: https://github.com/heyvaldemar/mattermost-traefik-letsencrypt-docker-compose/compare/v1.10.12...v1.10.13
