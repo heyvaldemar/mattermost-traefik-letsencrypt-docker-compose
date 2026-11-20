@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+_(no unreleased changes yet)_
+
+## [1.10.17] - 2026-11-20
+
 ### Security
 
 - **`postgres:16` was rebuilt upstream**; the pin moved from `sha256:63e83b5a3dc3…` to `sha256:3950ad7c3148…`. Same version, same tag, a rebuilt base image — the usual shape of a security fix in a base layer.
@@ -420,7 +424,8 @@ v1.2.0.
 
 - Shellcheck findings in both restore scripts.
 
-[Unreleased]: https://github.com/heyvaldemar/mattermost-traefik-letsencrypt-docker-compose/compare/v1.10.16...HEAD
+[Unreleased]: https://github.com/heyvaldemar/mattermost-traefik-letsencrypt-docker-compose/compare/v1.10.17...HEAD
+[1.10.17]: https://github.com/heyvaldemar/mattermost-traefik-letsencrypt-docker-compose/compare/v1.10.16...v1.10.17
 [1.10.16]: https://github.com/heyvaldemar/mattermost-traefik-letsencrypt-docker-compose/compare/v1.10.15...v1.10.16
 [1.10.15]: https://github.com/heyvaldemar/mattermost-traefik-letsencrypt-docker-compose/compare/v1.10.14...v1.10.15
 [1.10.14]: https://github.com/heyvaldemar/mattermost-traefik-letsencrypt-docker-compose/compare/v1.10.13...v1.10.14
